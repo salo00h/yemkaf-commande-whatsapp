@@ -279,61 +279,6 @@
       font-size:13px;
       padding:8px 0;
     }
-
-    /* ====== Mobile Improvements ====== */
-    @media (max-width:980px){
-      .page{grid-template-columns:1fr;}
-      .grid{grid-template-columns:1fr; gap:12px;}
-      .card{min-height:auto;}
-      .img{aspect-ratio:16/10;}
-      main{padding-bottom:120px;}
-
-      .summary{
-        position:fixed;
-        left:10px;
-        right:10px;
-        bottom:10px;
-        z-index:999;
-      }
-
-      .summary .panel{
-        max-height: calc(100vh - 160px);
-        overflow:auto;
-        background:rgba(247,247,248,.92);
-        backdrop-filter: blur(8px);
-        border:1px solid var(--border);
-        border-radius:16px;
-        padding:10px;
-        box-shadow: var(--shadow);
-      }
-
-      .list{max-height:200px;}
-    }
-
-    .mobileBar{display:none;}
-
-    @media (max-width:980px){
-      .mobileBar{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:10px;
-        padding:12px 14px;
-        background:#fff;
-        border:1px solid var(--border);
-        border-radius:16px;
-        box-shadow: var(--shadow);
-        cursor:pointer;
-        user-select:none;
-      }
-      .mobileBar .t{display:flex; flex-direction:column; gap:2px;}
-      .mobileBar .t .title{font-weight:900; font-size:14px;}
-      .mobileBar .t .sub{font-size:12px; color:var(--muted);}
-      .mobileBar .r{display:flex; flex-direction:column; align-items:flex-end; gap:2px;}
-      /* ✅ miniTotal بدون class=total عشان ما يتعارض */
-      .mobileBar .r .miniTotal{font-weight:900; font-size:16px; direction:ltr;}
-      .mobileBar .r .hint{font-size:11px; color:var(--muted); margin:0;}
-    }
   </style>
 </head>
 <body>
@@ -365,20 +310,6 @@
 
     <!-- السايدبار -->
     <section class="summary" aria-label="ملخص الطلب">
-
-      <div class="mobileBar" id="mobileBar">
-        <div class="t">
-          <div class="title">ملخص الطلب</div>
-          <div class="sub">
-            <span id="itemsCount">0</span> منتجات • <span id="miniWeight">0 g</span>
-          </div>
-        </div>
-        <div class="r">
-          <div class="miniTotal" id="miniTotal">0,00€</div>
-          <div class="hint">اضغط للتفاصيل</div>
-        </div>
-      </div>
-
       <div class="panel">
 
         <div class="box">
@@ -461,11 +392,13 @@
 </main>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
+  // رقم واتساب (بدون +)
   const WHATSAPP_PHONE = "33752312191";
 
+  // ضع صورك لاحقًا: عدّل image إلى مسار ملفك مثل "images/alkharj.jpg"
+  // إذا تركتها فارغة سيظهر Placeholder.
   const products = [
+    // تمور
     { id:"dates_alkharj_1kg", category:"dates", ar:"تمور الخرج الممتازة", fr:"Dattes ALKHARJ", size:"1Kg", price:5.50, image:"", weight_g: null },
     { id:"dates_sukkari_1kg", category:"dates", ar:"تمر سكري سعودي فاخر", fr:"Dattes Sukkari", size:"1Kg", price:6.90, image:"", weight_g: null },
     { id:"dates_khudry_400g", category:"dates", ar:"تمر خضري", fr:"Dattes KHUDRY", size:"400g", price:4.50, image:"", weight_g: null },
@@ -475,6 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { id:"dates_khalas_1kg", category:"dates", ar:"تمر خلاص ممتاز", fr:"Dattes KHALAS", size:"1Kg", price:5.50, image:"", weight_g: null },
     { id:"dates_pate_1kg", category:"dates", ar:"عجينة تمر", fr:"pâte de dattes", size:"1Kg", price:3.90, image:"", weight_g: null },
 
+    // شاي/قهوة
     { id:"tea_alkbous_227g", category:"tea-coffee", ar:"شاي الكبوس", fr:"Thé ALKBOUS", size:"227g", price:4.99, image:"", weight_g: null },
     { id:"tea_alkbous_454g", category:"tea-coffee", ar:"شاي الكبوس", fr:"Thé ALKBOUS", size:"454g", price:8.99, image:"", weight_g: null },
     { id:"tea_alkbous_500g", category:"tea-coffee", ar:"شاي الكبوس", fr:"Thé ALKBOUS", size:"500g", price:8.99, image:"", weight_g: null },
@@ -486,10 +420,12 @@ document.addEventListener("DOMContentLoaded", () => {
     { id:"coffee_grains_125g", category:"tea-coffee", ar:"قهوة يمنية حبوب", fr:"café yéménite en grains", size:"125g", price:5.00, image:"", weight_g: null },
     { id:"coffee_baydani_250g", category:"tea-coffee", ar:"قهوة بيضاني", fr:"Café Baydani", size:"250g", price:5.00, image:"", weight_g: null },
 
+    // بهارات
     { id:"spice_piment_fort_100g", category:"spices", ar:"فلفل حار", fr:"Piment fort", size:"100g", price:3.50, image:"", weight_g: null },
     { id:"spice_piment_habashi_100g", category:"spices", ar:"بسباس حبشي", fr:"Piment Habashi", size:"100g", price:3.50, image:"", weight_g: null },
     { id:"spice_curry_100g", category:"spices", ar:"كاري", fr:"Curry", size:"100g", price:2.50, image:"", weight_g: null },
 
+    // أخرى
     { id:"other_haricots_rouges_400g", category:"other", ar:"فاصوليا الهناء", fr:"Haricots rouges", size:"400g", price:1.50, image:"", weight_g: null },
     { id:"other_ghee_bint_900g", category:"other", ar:"سمن البنت", fr:"Ghee végétal", size:"900g", price:8.50, image:"", weight_g: null },
     { id:"other_ghee_qamariyya_900g", category:"other", ar:"سمن القمرية", fr:"Ghee végétal", size:"900g", price:8.00, image:"", weight_g: null },
@@ -503,6 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { id:"other_bakhour", category:"other", ar:"بخور", fr:"Al Bakhour", size:"", price:8.00, image:"", weight_g: null },
   ];
 
+  // ===== Shipping (Colissimo) =====
   const shippingRates = [
     { max_g: 250,  home: 5.49, pickup: 4.79 },
     { max_g: 500,  home: 7.59, pickup: 6.89 },
@@ -510,54 +447,58 @@ document.addEventListener("DOMContentLoaded", () => {
     { max_g: 1000, home: 9.59, pickup: 8.89 },
     { max_g: 2000, home: 11.19, pickup: 10.49 },
     { max_g: 5000, home: 17.39, pickup: 16.69 },
-    { max_g: 10000, home: 25.29, pickup: null },
-    { max_g: 15000, home: 31.99, pickup: null },
-    { max_g: 30000, home: 39.59, pickup: null },
+    { max_g: 10000, home: 25.29, pickup: null }, // N/A
+    { max_g: 15000, home: 31.99, pickup: null }, // N/A
+    { max_g: 30000, home: 39.59, pickup: null }, // N/A
   ];
 
-  let shippingMethod = "pickup";
+  let shippingMethod = "pickup"; // "home" أو "pickup"
 
+  // يحاول استخراج الوزن من size مثل 800g أو 1Kg
   function sizeToGrams(sizeStr){
     if(!sizeStr) return null;
     const s = String(sizeStr).toLowerCase().replace(/\s+/g,"");
+    // 800g
     const g = s.match(/^(\d+(?:\.\d+)?)g$/);
     if(g) return Math.round(parseFloat(g[1]));
+    // 1kg أو 1Kg
     const kg = s.match(/^(\d+(?:\.\d+)?)kg$/);
     if(kg) return Math.round(parseFloat(kg[1]) * 1000);
-    return null;
+    return null; // غير معروف (مثل خيط100، 20L...)
   }
 
   function getUnitWeightG(product){
+    // لو المستخدم كتب وزن يدوي استخدمه
     if(typeof product.weight_g === "number" && product.weight_g > 0) return product.weight_g;
+    // غير ذلك حاول استخراج الوزن من size
     return sizeToGrams(product.size);
   }
 
   function computeShippingCost(totalWeightG, method){
     if(totalWeightG <= 0) return 0;
     const row = shippingRates.find(r => totalWeightG <= r.max_g);
-    if(!row) return null;
+    if(!row) return null; // فوق 30kg
     const cost = method === "home" ? row.home : row.pickup;
-    return (typeof cost === "number") ? cost : null;
+    return (typeof cost === "number") ? cost : null; // null يعني N/A
   }
 
-  const cart = new Map();
+  const cart = new Map(); // id -> qty
   let currentFilter = "all";
 
   const grid = document.getElementById("grid");
   const cartList = document.getElementById("cartList");
   const totalEl = document.getElementById("total");
+
+  // ✅ Added
   const weightEl = document.getElementById("weight");
   const shippingEl = document.getElementById("shipping");
   const grandTotalEl = document.getElementById("grandTotal");
+
   const emptyCartEl = document.getElementById("emptyCart");
   const searchEl = document.getElementById("search");
 
-  const mobileBar = document.getElementById("mobileBar");
-  const itemsCountEl = document.getElementById("itemsCount");
-  const miniWeightEl = document.getElementById("miniWeight");
-  const miniTotalEl = document.getElementById("miniTotal");
-
   function formatEUR(n){
+    // يعرض مثل 5,50€
     return n.toFixed(2).replace(".", ",") + "€";
   }
 
@@ -645,24 +586,36 @@ document.addEventListener("DOMContentLoaded", () => {
   function setQty(id, qty){
     if(qty <= 0) cart.delete(id);
     else cart.set(id, Math.min(qty, 999));
+
     renderProducts();
     renderCart();
   }
 
+  // ✅ Replaced بالكامل
   function renderCart(){
     const items = Array.from(cart.entries())
       .map(([id, qty]) => {
         const p = products.find(x => x.id === id);
-        const unitW = getUnitWeightG(p);
+        const unitW = getUnitWeightG(p); // قد يكون null
         const lineW = unitW ? unitW * qty : null;
-        return { ...p, qty, unitWeightG: unitW, lineWeightG: lineW, lineTotal: p.price * qty };
+        return {
+          ...p,
+          qty,
+          unitWeightG: unitW,
+          lineWeightG: lineW,
+          lineTotal: p.price * qty
+        };
       });
 
     cartList.innerHTML = "";
     let subtotal = 0;
     let totalWeightG = 0;
 
-    emptyCartEl.style.display = (items.length === 0) ? "block" : "none";
+    if(items.length === 0){
+      emptyCartEl.style.display = "block";
+    }else{
+      emptyCartEl.style.display = "none";
+    }
 
     items.forEach(it => {
       subtotal += it.lineTotal;
@@ -704,21 +657,6 @@ document.addEventListener("DOMContentLoaded", () => {
       shippingEl.textContent = formatEUR(shippingCost);
       grandTotalEl.textContent = formatEUR(grandTotal);
     }
-
-    const itemsCount = items.reduce((s, it) => s + it.qty, 0);
-    if(itemsCountEl) itemsCountEl.textContent = itemsCount;
-
-    if(miniWeightEl) {
-      miniWeightEl.textContent = totalWeightG >= 1000
-        ? (totalWeightG/1000).toFixed(2).replace(".", ",") + " kg"
-        : totalWeightG + " g";
-    }
-
-    if(miniTotalEl) {
-      miniTotalEl.textContent = (shippingCost === null)
-        ? formatEUR(subtotal)
-        : formatEUR(grandTotal);
-    }
   }
 
   function buildWhatsAppMessage(){
@@ -731,6 +669,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return { p, qty, lineTotal: p.price * qty };
     });
 
+    // ✅ Updated totals + weight + shipping
     const subtotal = items.reduce((s, it) => s + it.lineTotal, 0);
     const totalWeightG = items.reduce((s, it) => {
       const w = getUnitWeightG(it.p);
@@ -752,6 +691,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lines.push(`- ${it.p.ar} / ${it.p.fr}${size} × ${it.qty} = ${formatEUR(it.lineTotal)}`);
     });
 
+    // ✅ Added shipping info
     const shipLabel = (shippingMethod === "home") ? "توصيل للمنزل" : "نقطة استلام";
     lines.push("");
     lines.push(`نوع التوصيل: ${shipLabel}`);
@@ -770,14 +710,22 @@ document.addEventListener("DOMContentLoaded", () => {
       lines.push(`الإجمالي مع التوصيل: ${formatEUR(grandTotal)}`);
     }
     lines.push("شكراً 🌿");
+
     return lines.join("\n");
   }
 
   document.getElementById("sendWA").addEventListener("click", () => {
     const address = document.getElementById("address").value.trim();
-    if(cart.size === 0){ alert("اختر منتجات أولاً."); return; }
-    if(!address){ alert("اكتب عنوان التوصيل أولاً."); return; }
+    if(cart.size === 0){
+      alert("اختر منتجات أولاً.");
+      return;
+    }
+    if(!address){
+      alert("اكتب عنوان التوصيل أولاً.");
+      return;
+    }
 
+    // ✅ تحقق من توفر الشحن
     let totalWeightG = 0;
     for(const [id, qty] of cart.entries()){
       const p = products.find(x => x.id === id);
@@ -801,8 +749,10 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCart();
     document.getElementById("address").value = "";
     document.getElementById("note").value = "";
+    // لا أمسح الاسم (اختياري)
   });
 
+  // فلاتر
   document.querySelectorAll(".pill").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".pill").forEach(b => b.classList.remove("active"));
@@ -812,38 +762,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // بحث
   searchEl.addEventListener("input", renderProducts);
 
+  // ✅ Added: Listener لنوع الشحن
   document.querySelectorAll('input[name="ship"]').forEach(r => {
     r.addEventListener("change", (e) => {
-      shippingMethod = e.target.value;
+      shippingMethod = e.target.value; // "home" or "pickup"
       renderCart();
     });
   });
 
-  if(mobileBar){
-    mobileBar.addEventListener("click", () => {
-      const panel = document.querySelector(".summary .panel");
-      if(!panel) return;
-      panel.style.display = (panel.style.display === "none") ? "flex" : "none";
-    });
-  }
-
-  function initMobilePanel(){
-    const panel = document.querySelector(".summary .panel");
-    if(!panel) return;
-    if(window.innerWidth <= 980){
-      panel.style.display = "none";
-    }else{
-      panel.style.display = "flex";
-    }
-  }
-  window.addEventListener("resize", initMobilePanel);
-
+  // تشغيل أولي
   renderProducts();
   renderCart();
-  initMobilePanel();
-});
 </script>
 
 </body>
